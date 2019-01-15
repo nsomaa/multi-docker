@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t nsoma75/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run nsoma75/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t nsoma75/multi-client ./client
+  - docker build -t nsoma75/multi-nginx ./nginx
+  - docker build -t nsoma75/multi-server ./server
+  - docker build -t nsoma75/multi-worker ./worker
+
+  # login to docker cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push nsoma75/multi-client
+  - docker push nsoma75/multi-nginx
+  - docker push nsoma75/multi-server
+  - docker push nsoma75/multi-worker

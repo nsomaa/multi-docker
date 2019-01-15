@@ -20,3 +20,15 @@ after_success:
   - docker push nsoma75/multi-nginx
   - docker push nsoma75/multi-server
   - docker push nsoma75/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "multi-docker"
+  env: "DockerReact-env"
+  bucket_name: "elasticbeanstalk-us-east-2-036504966336"
+  bucket_path: "multi-docker"
+  on:
+    branch: master
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: "$AWS_SECRET_KEY"
